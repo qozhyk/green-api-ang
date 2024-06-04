@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    height: 100vh; /* Занимает всю высоту экрана */
+    padding: 8px;
+}
+  
+.left-panel, .right-panel {
+    flex: 1; /* Обе панели занимают равное пространство */
+    padding: 8px; /* Отступы внутри панелей */
+}
+h2{
+    text-align: center;
+}
+
+mat-card {
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+}
+  
+.full-width {
+    width: 100%;
+}
+.form-container {
+    display: flex;
+    flex-direction: column;
+}
+
+form{
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+.end{
+    margin-top: auto;
+}
