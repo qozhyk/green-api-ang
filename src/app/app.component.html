@@ -1,12 +1,25 @@
 <div class="container">
   <div class="left-panel">
     <mat-card>
-        <h2 color="primary">Текущие настройки аккаунта</h2>
-        <button mat-raised-button color="primary" class="end" (click)="fetchSettings()">Получить</button>
+      <!-- <div>
+        <label for="idInstance">ID Instance:</label>
+        <input type="text" id="idInstance" [(ngModel)]="idInstance" name="idInstance" />
+      </div> -->
+
+      <mat-form-field appearance="fill">
+        <mat-label>ID Instance:</mat-label>
+        <input matInput type="text" id="chatId" [(ngModel)]="idInstance" name="idInstance" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>API Token Instance:</mat-label>
+        <input matInput type="text" id="chatId" [(ngModel)]="apiTokenInstance" name="apiTokenInstance" required>
+      </mat-form-field>
+        <button mat-raised-button color="primary" class="end" (click)="fetchSettings()">Применить</button><br>
 
 
-        <h2>Cостояния Аккаунта</h2>
-        <button mat-raised-button color="primary" class="end" (click)="fetchStateInstance()">Получить</button>
+
+        
 
         <h2>Отправить сообщение</h2>
         <form (ngSubmit)="sendMessage()">
@@ -47,9 +60,17 @@
   <div class="right-panel">
     <mat-card>
         <h1>Результат</h1>
-        <div *ngIf="settings">
+        <div *ngIf="errorMessage">
+          <h2>Ошибка</h2>
+          <pre>{{ errorMessage | json }}</pre>
+        </div>
+        <div *ngIf="idInstance">
           <h2>Account Settings</h2>
-          <pre>{{ settings | json }}</pre>
+          <pre>{{ idInstance | json }}</pre>
+        </div>
+        <div *ngIf="apiTokenInstance">
+          <h2>Account Settings</h2>
+          <pre>{{ apiTokenInstance | json }}</pre>
         </div>
         <div *ngIf="stateInstance">
           <h2>Account State</h2>

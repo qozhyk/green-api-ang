@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GreenService } from './green.service';
+import { HttpErrorResponse } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-root',
@@ -18,32 +20,31 @@ export class AppComponent implements OnInit {
   caption: string = '';
   chatIdU: any;
 
-  constructor(private settingsService: GreenService) {}
+  idInstance: string = '';
+  apiTokenInstance: string = '';
+
+  errorMessage: string = ''; // Add a property to hold error message
+
+
+  constructor(private greenService: GreenService) {} // Inject GreenService into the constructor
 
   ngOnInit(): void {}
 
   fetchSettings(): void {
-    this.clearResults();
-    this.settingsService.getSettings().subscribe(
-      (data) => {
-        this.settings = data;
-        console.log('Settings:', this.settings);
-      },
-      (error) => {
-        console.error('Error fetching settings:', error);
-      }
-    );
-  }
+    if (!this.idInstance || !this.apiTokenInstance) {
+      this.errorMessage = 'Проверьте пожалуйста Token & ID Инстации'; // Set error message
+      return;
+    }
 
-  fetchStateInstance(): void {
-    this.clearResults();
-    this.settingsService.getStateInstance().subscribe(
-      (data) => {
-        this.stateInstance = data.stateInstance;
-        console.log('State Instance:', this.stateInstance);
+    this.greenService.setCredentials(this.idInstance, this.apiTokenInstance);
+    this.greenService.getSettings().subscribe(
+      (data: any) => {
+        this.settings = data;
+        console.log('Settings:', data);
       },
-      (error) => {
-        console.error('Error fetching state instance:', error);
+      (error: HttpErrorResponse) => {
+        this.errorMessage = 'Error fetching settings: ' + error.statusText; // Set error message
+        console.error('Error fetching settings:', error);
       }
     );
   }
@@ -54,8 +55,8 @@ export class AppComponent implements OnInit {
       console.error('Chat ID and message are required');
       return;
     }
-    const fullChatId = `${this.chatId}@c.us`; // Добавляем суффикс @c.us
-    this.settingsService.sendMessage(fullChatId, this.message).subscribe(
+    const fullChatId = `${this.chatId}@c.us`;
+    this.greenService.sendMessage(fullChatId, this.message).subscribe(
       (response) => {
         this.messageId = response.idMessage;
         console.log('Message sent with ID:', this.messageId);
@@ -76,7 +77,7 @@ export class AppComponent implements OnInit {
       this.chatIdU += '@c.us';
     }
 
-    this.settingsService.sendFileByUrl(this.chatIdU, this.urlFile, this.fileName, this.caption).subscribe(
+    this.greenService.sendFileByUrl(this.chatIdU, this.urlFile, this.fileName, this.caption).subscribe(
       (response) => {
         this.messageIdU = response.idMessage;
         console.log('File sent with ID:', response.idMessage);
